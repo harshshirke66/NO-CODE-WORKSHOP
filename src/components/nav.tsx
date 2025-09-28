@@ -32,7 +32,7 @@ export function Nav() {
               className="group-data-[collapsible=icon]:justify-center"
             >
               <item.icon
-                className="text-accent"
+                className="text-sidebar-primary"
                 aria-hidden="true"
               />
               <span className="group-data-[collapsible=icon]:hidden">

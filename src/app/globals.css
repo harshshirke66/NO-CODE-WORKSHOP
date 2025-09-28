@@ -4,11 +4,11 @@
 
 @layer base {
   :root {
-    --background: 222 84% 97%;
+    --background: 50 33% 95%; /* Parchment off-white */
     --foreground: 222 47% 11%;
-    --card: 222 84% 99%;
+    --card: 50 33% 98%;
     --card-foreground: 222 47% 11%;
-    --popover: 222 84% 99%;
+    --popover: 50 33% 98%;
     --popover-foreground: 222 47% 11%;
     --primary: 217 91% 60%;
     --primary-foreground: 210 40% 98%;
@@ -16,7 +16,7 @@
     --secondary-foreground: 217 91% 60%;
     --muted: 210 40% 96%;
     --muted-foreground: 215 28% 44%;
-    --accent: 45 93% 47%;
+    --accent: 45 86% 47%; /* Antique Gold */
     --accent-foreground: 210 40% 98%;
     --destructive: 0 84.2% 60.2%;
     --destructive-foreground: 0 0% 98%;
@@ -30,14 +30,14 @@
     --chart-5: 27 87% 67%;
     --radius: 0.5rem;
 
-    --sidebar-background: 222 47% 11%;
+    --sidebar-background: 215 35% 25%; /* Dark Slate Blue */
     --sidebar-foreground: 210 40% 98%;
-    --sidebar-primary: 210 40% 98%;
-    --sidebar-primary-foreground: 222 47% 11%;
-    --sidebar-accent: 217 91% 60%;
-    --sidebar-accent-foreground: 210 40% 98%;
-    --sidebar-border: 214.3 31.8% 91.4%;
-    --sidebar-ring: 217 91% 60%;
+    --sidebar-primary: 45 86% 47%; /* Antique Gold */
+    --sidebar-primary-foreground: 50 33% 95%;
+    --sidebar-accent: 45 86% 55%; /* Brighter Gold for hover */
+    --sidebar-accent-foreground: 215 35% 25%;
+    --sidebar-border: 215 35% 30%;
+    --sidebar-ring: 45 86% 47%;
   }
   .dark {
     --background: 222 47% 11%;
