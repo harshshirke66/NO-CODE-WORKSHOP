@@ -1,14 +1,14 @@
 
 'use client';
 
-import { useState, useRef, useEffect, ReactNode } from 'react';
+import { useState, useRef, useEffect, ReactNode, ChangeEvent } from 'react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { ScrollArea } from '@/components/ui/scroll-area';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
-import { Loader2, Send, Landmark } from 'lucide-react';
-import { ArtworkIdentifier } from './artwork-identifier';
-import type { IdentifyArtworkOutput } from '@/ai/flows/artwork-identification';
+import { Loader2, Send, Landmark, Upload } from 'lucide-react';
+import { useToast } from "@/hooks/use-toast";
+import { identifyArtwork, type IdentifyArtworkOutput } from '@/ai/flows/artwork-identification';
 import { ArtworkCard } from './artwork-card';
 import { PersonalizedTourGenerator } from './personalized-tour-generator';
 import type { PersonalizedTourOutput } from '@/ai/flows/personalized-tour-generation';
@@ -26,6 +26,8 @@ export function ChatInterface() {
   const [input, setInput] = useState('');
   const [isLoading, setIsLoading] = useState(false);
   const scrollAreaRef = useRef<HTMLDivElement>(null);
+  const fileInputRef = useRef<HTMLInputElement>(null);
+  const { toast } = useToast();
 
   useEffect(() => {
     // Add initial welcome message
@@ -44,12 +46,6 @@ export function ChatInterface() {
                     </div>
                 </div>
             )
-        },
-        {
-            id: 'artwork-identifier-component',
-            sender: 'bot',
-            content: <ArtworkIdentifier onIdentificationComplete={handleIdentification} onIsLoading={handleLoading} />,
-            isComponent: true,
         },
     ]);
   }, []);
@@ -79,6 +75,46 @@ export function ChatInterface() {
     }
   };
 
+  const handleFileChange = (e: ChangeEvent<HTMLInputElement>) => {
+    const selectedFile = e.target.files?.[0];
+    if (selectedFile) {
+      handleImage(selectedFile);
+    }
+  };
+
+  const handleImage = async (file: File) => {
+    setIsLoading(true);
+    setMessages(prev => prev.filter(m => !m.isComponent));
+
+    const reader = new FileReader();
+    reader.readAsDataURL(file);
+    reader.onload = async () => {
+      const photoDataUri = reader.result as string;
+      try {
+        const identificationResult = await identifyArtwork({ photoDataUri });
+        handleIdentification(identificationResult, photoDataUri);
+      } catch (error) {
+        console.error("Artwork identification failed:", error);
+        toast({
+          title: "Identification Failed",
+          description: "Could not identify the artwork. Please try another image.",
+          variant: "destructive",
+        });
+      } finally {
+        setIsLoading(false);
+      }
+    };
+    reader.onerror = (error) => {
+        console.error("Error reading file:", error);
+        toast({
+          title: "File Read Error",
+          description: "There was an issue reading your image file. Please try again.",
+          variant: "destructive",
+        });
+        setIsLoading(false);
+    };
+  };
+
   const handleIdentification = (result: IdentifyArtworkOutput, imagePreviewUrl: string) => {
     setMessages(prev => [
       ...prev,
@@ -92,16 +128,11 @@ export function ChatInterface() {
         sender: 'bot',
         content: <ArtworkCard artwork={result} imagePreviewUrl={imagePreviewUrl} />,
       },
-      {
-        id: 'artwork-identifier-component-new',
-        sender: 'bot',
-        content: <ArtworkIdentifier onIdentificationComplete={handleIdentification} onIsLoading={handleLoading} />,
-        isComponent: true,
-      },
     ]);
   };
 
   const handleTourGeneration = (result: PersonalizedTourOutput) => {
+    setIsLoading(false);
     setMessages(prev => [
       ...prev,
       {
@@ -123,12 +154,6 @@ export function ChatInterface() {
           </Card>
         ),
       },
-       {
-            id: 'artwork-identifier-component-new-tour',
-            sender: 'bot',
-            content: <ArtworkIdentifier onIdentificationComplete={handleIdentification} onIsLoading={handleLoading} />,
-            isComponent: true,
-        },
     ]);
   };
 
@@ -162,19 +187,27 @@ export function ChatInterface() {
             sender: 'bot',
             content: `I'm not sure how to help with that. You can upload an image to identify artwork, or ask me to "create a tour".`,
         };
-        setTimeout(() => setMessages(prev => [...prev, botMessage,  {
-            id: 'artwork-identifier-component-new-generic',
-            sender: 'bot',
-            content: <ArtworkIdentifier onIdentificationComplete={handleIdentification} onIsLoading={handleLoading} />,
-            isComponent: true,
-        }]), 500);
+        setTimeout(() => setMessages(prev => [...prev, botMessage]), 500);
     }
     
     setInput('');
   };
 
+  const handleUploadClick = () => {
+    fileInputRef.current?.click();
+  };
+
   return (
     <div className="flex flex-col h-full bg-card rounded-lg border">
+       <Input 
+          id="artwork-image-chat" 
+          type="file" 
+          accept="image/*" 
+          onChange={handleFileChange} 
+          className="hidden"
+          ref={fileInputRef}
+          disabled={isLoading}
+        />
       <div className="flex-1 p-4">
         <ScrollArea className="h-full" ref={scrollAreaRef}>
           <div className="space-y-6 pr-4">
@@ -194,6 +227,7 @@ export function ChatInterface() {
                 )}
                 <div
                   className={`max-w-xl rounded-lg px-4 py-3 shadow-sm ${
+                    message.isComponent ? 'bg-transparent shadow-none p-0' : 
                     message.sender === 'user'
                       ? 'bg-primary text-primary-foreground rounded-br-none'
                       : 'bg-background rounded-bl-none'
@@ -229,6 +263,9 @@ export function ChatInterface() {
       </div>
       <div className="p-4 border-t bg-background/80 backdrop-blur-sm rounded-b-lg">
         <form onSubmit={handleSubmit} className="flex items-center gap-2">
+          <Button type="button" variant="ghost" size="icon" onClick={handleUploadClick} disabled={isLoading}>
+            <Upload className="w-5 h-5" />
+          </Button>
           <Input
             value={input}
             onChange={(e) => setInput(e.target.value)}
