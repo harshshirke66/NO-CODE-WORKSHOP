@@ -6,12 +6,13 @@ import {
   SidebarMenuItem,
   SidebarMenuButton,
 } from "@/components/ui/sidebar";
-import { Image, Map, MessageSquare, Route, Sparkles } from "lucide-react";
+import { Image, Map, MessageSquare, Route, Sparkles, Ticket } from "lucide-react";
 import Link from "next/link";
 
 const navItems = [
   { href: "/dashboard", icon: MessageSquare, label: "Chat" },
   { href: "/dashboard/tour", icon: Route, label: "Personalized Tour" },
+  { href: "/dashboard/tickets", icon: Ticket, label: "Tickets" },
   { href: "/dashboard/map", icon: Map, label: "Museum Map" },
 ];
 

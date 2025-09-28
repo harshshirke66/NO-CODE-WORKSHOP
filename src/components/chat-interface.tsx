@@ -14,6 +14,9 @@ import { ArtworkCard } from './artwork-card';
 import { PersonalizedTourGenerator } from './personalized-tour-generator';
 import type { PersonalizedTourOutput } from '@/ai/flows/personalized-tour-generation';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from './ui/card';
+import { BookingForm, type BookingDetails } from './booking-form';
+import { TicketCard } from './ticket-card';
+
 
 type Message = {
   id: string;
@@ -43,7 +46,7 @@ export function ChatInterface() {
                     <p className="text-sm text-muted-foreground">You can ask me things like:</p>
                     <div className="flex flex-col sm:flex-row gap-2 pt-2">
                        <Button size="sm" variant="outline" onClick={() => handleQuickAction('Create a tour for me')}>Create a 1-hour tour</Button>
-                       <Button size="sm" variant="outline" onClick={() => handleQuickAction('How do I book tickets?')}>Book tickets</Button>
+                       <Button size="sm" variant="outline" onClick={() => handleQuickAction('Book tickets')}>Book tickets</Button>
                     </div>
                 </div>
             )
@@ -157,6 +160,18 @@ export function ChatInterface() {
       },
     ]);
   };
+  
+  const handleBooking = (details: BookingDetails) => {
+    setIsLoading(false);
+    setMessages(prev => [
+        ...prev.filter(m => !m.isComponent),
+        {
+            id: `bot-ticket-${Date.now()}`,
+            sender: 'bot',
+            content: <TicketCard bookingDetails={details} />,
+        },
+    ]);
+  };
 
   const handleSubmit = async (e: React.FormEvent, actionText?: string) => {
     e.preventDefault();
@@ -185,6 +200,17 @@ export function ChatInterface() {
               }
           ]);
           setIsLoading(false); // The generator will handle its own loading state
+      } else if (currentInput.toLowerCase().includes('ticket') || currentInput.toLowerCase().includes('book')) {
+          setMessages(prev => [
+              ...prev,
+              {
+                  id: `bot-booking-form-${Date.now()}`,
+                  sender: 'bot',
+                  content: <BookingForm onBookingComplete={handleBooking} onIsLoading={handleLoading} />,
+                  isComponent: true,
+              }
+          ]);
+          setIsLoading(false); // The booking form will handle its own loading state
       } else {
           // Handle general conversation
           const response = await generalConversation({ query: currentInput });
