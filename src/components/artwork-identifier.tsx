@@ -60,9 +60,6 @@ export function ArtworkIdentifier({ onIdentificationComplete, onIsLoading }: Art
 
   return (
     <div className="grid gap-4 p-4 border rounded-lg bg-card">
-        <Label htmlFor="artwork-image-chat" className="text-center">
-            Ready to identify an artwork?
-        </Label>
         <Input id="artwork-image-chat" type="file" accept="image/*" onChange={handleFileChange} className="cursor-pointer"/>
     </div>
   );
