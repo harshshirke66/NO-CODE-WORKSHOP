@@ -1,3 +1,40 @@
 {
-  "placeholderImages": []
+  "placeholderImages": [
+    {
+      "id": "hero-museum",
+      "description": "A grand museum hall with classic architecture and sculptures",
+      "imageUrl": "https://images.unsplash.com/photo-1647635474997-629053ca04b6?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHwxMHx8bXVzZXVtJTIwaW50ZXJpb3J8ZW58MHx8fHwxNzU5MDQyMzYxfDA&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageHint": "museum interior"
+    },
+    {
+      "id": "museum-map",
+      "description": "A floor plan of a museum",
+      "imageUrl": "https://images.unsplash.com/photo-1687475777836-6a37163f8a92?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHw0fHxtdXNldW0lMjBtYXB8ZW58MHx8fHwxNzU5MDQyMzYxfDA&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageHint": "museum map"
+    },
+    {
+      "id": "artwork-mona-lisa",
+      "description": "Mona Lisa by Leonardo da Vinci",
+      "imageUrl": "https://images.unsplash.com/photo-1423742774270-6884aac775fa?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHwzfHxNb25hJTIwTGlzYXxlbnwwfHx8fDE3NTkwNDIzNjF8MA&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageHint": "Mona Lisa"
+    },
+    {
+      "id": "artwork-starry-night",
+      "description": "The Starry Night by Vincent van Gogh",
+      "imageUrl": "https://images.unsplash.com/photo-1522124624696-7ea32eb9592c?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHw3fHxTdGFycnklMjBOaWdodHxlbnwwfHx8fDE3NTkwNDIzNjF8MA&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageHint": "Starry Night"
+    },
+    {
+      "id": "artwork-persistence-of-memory",
+      "description": "The Persistence of Memory by Salvador Dalí",
+      "imageUrl": "https://images.unsplash.com/photo-1588855976257-70e13d9abb10?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHw0fHxQZXJzaXN0ZW5jZSUyME1lbW9yeXxlbnwwfHx8fDE3NTkwNDIzNjF8MA&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageHint": "Persistence Memory"
+    },
+    {
+      "id": "artwork-girl-with-a-pearl-earring",
+      "description": "Girl with a Pearl Earring by Johannes Vermeer",
+      "imageUrl": "https://images.unsplash.com/photo-1708268765147-82cf60cb4cbb?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHw1fHxQZWFybCUyMEVhcnJpbmd8ZW58MHx8fHwxNzU5MDQyMzYxfDA&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageHint": "Pearl Earring"
+    }
+  ]
 }
