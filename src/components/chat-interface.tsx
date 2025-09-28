@@ -6,14 +6,13 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { ScrollArea } from '@/components/ui/scroll-area';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
-import { Loader2, Send, Sparkles, Image as ImageIcon, Route, Building2 } from 'lucide-react';
+import { Loader2, Send, Building2 } from 'lucide-react';
 import { ArtworkIdentifier } from './artwork-identifier';
 import type { IdentifyArtworkOutput } from '@/ai/flows/artwork-identification';
 import { ArtworkCard } from './artwork-card';
 import { PersonalizedTourGenerator } from './personalized-tour-generator';
 import type { PersonalizedTourOutput } from '@/ai/flows/personalized-tour-generation';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from './ui/card';
-import { Skeleton } from './ui/skeleton';
 
 type Message = {
   id: string;
@@ -35,13 +34,14 @@ export function ChatInterface() {
             id: 'welcome',
             sender: 'bot',
             content: (
-                <div>
-                    <p className="font-bold text-lg">Welcome to ALLY, your personal museum guide!</p>
-                    <p>I can help you with a few things:</p>
-                    <ul className="list-disc list-inside mt-2 space-y-1">
-                        <li><span className="font-semibold">Identify Artwork:</span> Upload an image, and I'll tell you about it.</li>
-                        <li><span className="font-semibold">Generate a Tour:</span> Type "give me a tour" or "create a tour" to get a personalized plan.</li>
-                    </ul>
+                <div className="space-y-2">
+                    <p className="font-bold text-lg">Welcome to the museum!</p>
+                    <p>I'm ALLY, your personal guide. How can I help you today?</p>
+                    <p className="text-sm text-muted-foreground">You can ask me things like:</p>
+                    <div className="flex flex-col sm:flex-row gap-2 pt-2">
+                       <Button size="sm" variant="outline" onClick={() => handleQuickAction('Create a tour for me')}>Create a 1-hour tour</Button>
+                       <Button size="sm" variant="outline" onClick={() => handleQuickAction('Tell me about the Mona Lisa')}>Info on Mona Lisa</Button>
+                    </div>
                 </div>
             )
         },
@@ -53,6 +53,14 @@ export function ChatInterface() {
         },
     ]);
   }, []);
+
+  const handleQuickAction = (actionText: string) => {
+    setInput(actionText);
+    // We create a synthetic event to pass to handleSubmit
+    const fakeEvent = { preventDefault: () => {} } as React.FormEvent;
+     // A short delay to allow the input state to update before submitting
+    setTimeout(() => handleSubmit(fakeEvent, actionText), 100);
+  }
 
   useEffect(() => {
     if (scrollAreaRef.current) {
@@ -124,19 +132,20 @@ export function ChatInterface() {
     ]);
   };
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = (e: React.FormEvent, actionText?: string) => {
     e.preventDefault();
-    if (!input.trim() || isLoading) return;
+    const currentInput = actionText || input;
+    if (!currentInput.trim() || isLoading) return;
 
     const userMessage: Message = {
       id: `user-${Date.now()}`,
       sender: 'user',
-      content: input,
+      content: currentInput,
     };
     
     setMessages(prev => [...prev.filter(m => !m.isComponent), userMessage]);
 
-    if (input.toLowerCase().includes('tour')) {
+    if (currentInput.toLowerCase().includes('tour')) {
         setMessages(prev => [
             ...prev,
             {
@@ -147,7 +156,7 @@ export function ChatInterface() {
             }
         ]);
     } else {
-        // Generic bot response
+        // Generic bot response for now, can be replaced with an AI call
         const botMessage: Message = {
             id: `bot-${Date.now()}`,
             sender: 'bot',
@@ -184,10 +193,10 @@ export function ChatInterface() {
                   </Avatar>
                 )}
                 <div
-                  className={`max-w-md rounded-lg p-3 ${
+                  className={`max-w-xl rounded-lg px-4 py-3 shadow-sm ${
                     message.sender === 'user'
-                      ? 'bg-primary text-primary-foreground'
-                      : 'bg-background'
+                      ? 'bg-primary text-primary-foreground rounded-br-none'
+                      : 'bg-background rounded-bl-none'
                   }`}
                 >
                   {message.content}
@@ -207,7 +216,7 @@ export function ChatInterface() {
                         <Building2 className="w-4 h-4" />
                     </div>
                 </Avatar>
-                <div className="max-w-md rounded-lg p-3 bg-background">
+                <div className="max-w-md rounded-lg p-3 bg-background rounded-bl-none shadow-sm">
                     <div className="flex items-center gap-2">
                         <Loader2 className="w-5 h-5 animate-spin" />
                         <span>Thinking...</span>
@@ -218,12 +227,12 @@ export function ChatInterface() {
           </div>
         </ScrollArea>
       </div>
-      <div className="p-4 border-t bg-background rounded-b-lg">
+      <div className="p-4 border-t bg-background/80 backdrop-blur-sm rounded-b-lg">
         <form onSubmit={handleSubmit} className="flex items-center gap-2">
           <Input
             value={input}
             onChange={(e) => setInput(e.target.value)}
-            placeholder="Type 'give me a tour' or upload an image..."
+            placeholder="Ask about art, or request a tour..."
             className="flex-1"
             disabled={isLoading}
           />
