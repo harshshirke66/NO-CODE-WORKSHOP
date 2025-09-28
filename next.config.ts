@@ -30,6 +30,17 @@ const nextConfig: NextConfig = {
       },
     ],
   },
+  devIndicators: {
+    buildActivity: false,
+  },
+  // In a future version of Next.js, the development server will
+  // not start if this is not here.
+  experimental: {
+    allowedDevOrigins: [
+      'https://*.googleusercontent.com',
+      'https://*.cloudworkstations.dev',
+    ],
+  },
 };
 
 export default nextConfig;
