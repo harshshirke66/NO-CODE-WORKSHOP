@@ -1,15 +1,11 @@
 "use client";
 
-import { useState, type ChangeEvent } from "react";
+import { useState, type ChangeEvent, useRef } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
 import { useToast } from "@/hooks/use-toast";
 import { identifyArtwork, type IdentifyArtworkOutput } from "@/ai/flows/artwork-identification";
-import { Loader2, Upload } from "lucide-react";
-import { ArtworkCard } from "./artwork-card";
-import { Card, CardContent } from "./ui/card";
-import { Skeleton } from "./ui/skeleton";
+import { Upload } from "lucide-react";
 
 type ArtworkIdentifierProps = {
   onIdentificationComplete: (result: IdentifyArtworkOutput, imagePreviewUrl: string) => void;
@@ -18,6 +14,7 @@ type ArtworkIdentifierProps = {
 
 export function ArtworkIdentifier({ onIdentificationComplete, onIsLoading }: ArtworkIdentifierProps) {
   const { toast } = useToast();
+  const fileInputRef = useRef<HTMLInputElement>(null);
 
   const handleFileChange = (e: ChangeEvent<HTMLInputElement>) => {
     const selectedFile = e.target.files?.[0];
@@ -58,9 +55,24 @@ export function ArtworkIdentifier({ onIdentificationComplete, onIsLoading }: Art
     };
   };
 
+  const handleClick = () => {
+    fileInputRef.current?.click();
+  };
+
   return (
     <div className="grid gap-4 p-4 border rounded-lg bg-card">
-        <Input id="artwork-image-chat" type="file" accept="image/*" onChange={handleFileChange} className="cursor-pointer"/>
+        <Input 
+          id="artwork-image-chat" 
+          type="file" 
+          accept="image/*" 
+          onChange={handleFileChange} 
+          className="hidden"
+          ref={fileInputRef}
+        />
+        <Button onClick={handleClick} variant="outline">
+            <Upload className="mr-2 h-4 w-4" />
+            Upload Artwork to Identify
+        </Button>
     </div>
   );
 }
