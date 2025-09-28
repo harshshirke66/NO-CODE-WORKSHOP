@@ -9,6 +9,7 @@ import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { Loader2, Send, Landmark, Upload } from 'lucide-react';
 import { useToast } from "@/hooks/use-toast";
 import { identifyArtwork, type IdentifyArtworkOutput } from '@/ai/flows/artwork-identification';
+import { generalConversation } from '@/ai/flows/general-conversation';
 import { ArtworkCard } from './artwork-card';
 import { PersonalizedTourGenerator } from './personalized-tour-generator';
 import type { PersonalizedTourOutput } from '@/ai/flows/personalized-tour-generation';
@@ -42,7 +43,7 @@ export function ChatInterface() {
                     <p className="text-sm text-muted-foreground">You can ask me things like:</p>
                     <div className="flex flex-col sm:flex-row gap-2 pt-2">
                        <Button size="sm" variant="outline" onClick={() => handleQuickAction('Create a tour for me')}>Create a 1-hour tour</Button>
-                       <Button size="sm" variant="outline" onClick={() => handleQuickAction('Tell me about the Mona Lisa')}>Info on Mona Lisa</Button>
+                       <Button size="sm" variant="outline" onClick={() => handleQuickAction('How do I book tickets?')}>Book tickets</Button>
                     </div>
                 </div>
             )
@@ -157,7 +158,7 @@ export function ChatInterface() {
     ]);
   };
 
-  const handleSubmit = (e: React.FormEvent, actionText?: string) => {
+  const handleSubmit = async (e: React.FormEvent, actionText?: string) => {
     e.preventDefault();
     const currentInput = actionText || input;
     if (!currentInput.trim() || isLoading) return;
@@ -169,28 +170,41 @@ export function ChatInterface() {
     };
     
     setMessages(prev => [...prev.filter(m => !m.isComponent), userMessage]);
-
-    if (currentInput.toLowerCase().includes('tour')) {
-        setMessages(prev => [
-            ...prev,
-            {
-                id: `bot-tour-form-${Date.now()}`,
-                sender: 'bot',
-                content: <PersonalizedTourGenerator onTourGenerated={handleTourGeneration} onIsLoading={handleLoading} />,
-                isComponent: true,
-            }
-        ]);
-    } else {
-        // Generic bot response for now, can be replaced with an AI call
-        const botMessage: Message = {
-            id: `bot-${Date.now()}`,
-            sender: 'bot',
-            content: `I'm not sure how to help with that. You can upload an image to identify artwork, or ask me to "create a tour".`,
-        };
-        setTimeout(() => setMessages(prev => [...prev, botMessage]), 500);
-    }
-    
+    setIsLoading(true);
     setInput('');
+
+    try {
+      if (currentInput.toLowerCase().includes('tour')) {
+          setMessages(prev => [
+              ...prev,
+              {
+                  id: `bot-tour-form-${Date.now()}`,
+                  sender: 'bot',
+                  content: <PersonalizedTourGenerator onTourGenerated={handleTourGeneration} onIsLoading={handleLoading} />,
+                  isComponent: true,
+              }
+          ]);
+          setIsLoading(false); // The generator will handle its own loading state
+      } else {
+          // Handle general conversation
+          const response = await generalConversation({ query: currentInput });
+          const botMessage: Message = {
+              id: `bot-${Date.now()}`,
+              sender: 'bot',
+              content: response.response,
+          };
+          setMessages(prev => [...prev, botMessage]);
+      }
+    } catch (error) {
+       console.error("AI call failed:", error);
+        toast({
+          title: "An error occurred",
+          description: "I'm sorry, I couldn't process that request. Please try again.",
+          variant: "destructive",
+        });
+    } finally {
+        setIsLoading(false);
+    }
   };
 
   const handleUploadClick = () => {

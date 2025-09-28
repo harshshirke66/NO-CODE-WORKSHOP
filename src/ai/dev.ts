@@ -3,3 +3,4 @@ config();
 
 import '@/ai/flows/artwork-identification.ts';
 import '@/ai/flows/personalized-tour-generation.ts';
+import '@/ai/flows/general-conversation.ts';
