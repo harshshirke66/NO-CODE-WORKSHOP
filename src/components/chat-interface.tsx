@@ -6,7 +6,7 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { ScrollArea } from '@/components/ui/scroll-area';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
-import { Loader2, Send, Building2 } from 'lucide-react';
+import { Loader2, Send, Landmark } from 'lucide-react';
 import { ArtworkIdentifier } from './artwork-identifier';
 import type { IdentifyArtworkOutput } from '@/ai/flows/artwork-identification';
 import { ArtworkCard } from './artwork-card';
@@ -35,8 +35,8 @@ export function ChatInterface() {
             sender: 'bot',
             content: (
                 <div className="space-y-2">
-                    <p className="font-bold text-lg">Welcome to the museum!</p>
-                    <p>I'm ALLY, your personal guide. How can I help you today?</p>
+                    <p className="font-bold text-lg">Welcome to the Lords Museum!</p>
+                    <p>I am your personal guide. How can I assist you today?</p>
                     <p className="text-sm text-muted-foreground">You can ask me things like:</p>
                     <div className="flex flex-col sm:flex-row gap-2 pt-2">
                        <Button size="sm" variant="outline" onClick={() => handleQuickAction('Create a tour for me')}>Create a 1-hour tour</Button>
@@ -188,7 +188,7 @@ export function ChatInterface() {
                 {message.sender === 'bot' && (
                   <Avatar className="w-8 h-8 border-2 border-primary">
                     <div className="w-full h-full flex items-center justify-center bg-primary text-primary-foreground">
-                        <Building2 className="w-4 h-4" />
+                        <Landmark className="w-4 h-4" />
                     </div>
                   </Avatar>
                 )}
@@ -213,7 +213,7 @@ export function ChatInterface() {
               <div className="flex items-start gap-3">
                 <Avatar className="w-8 h-8 border-2 border-primary">
                     <div className="w-full h-full flex items-center justify-center bg-primary text-primary-foreground">
-                        <Building2 className="w-4 h-4" />
+                        <Landmark className="w-4 h-4" />
                     </div>
                 </Avatar>
                 <div className="max-w-md rounded-lg p-3 bg-background rounded-bl-none shadow-sm">

@@ -3,8 +3,8 @@ import './globals.css';
 import { Toaster } from "@/components/ui/toaster"
 
 export const metadata: Metadata = {
-  title: 'ALLY - Your Personal Museum Guide',
-  description: 'Identify artworks, get personalized tours, and explore museums like never before.',
+  title: 'Lords Museum - Your Personal Guide',
+  description: 'Explore the Lords Museum. Identify artworks, get personalized tours, and explore the collection like never before.',
 };
 
 export default function RootLayout({

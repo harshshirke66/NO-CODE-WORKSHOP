@@ -9,7 +9,7 @@ import {
 } from "@/components/ui/sidebar";
 import { Nav } from "@/components/nav";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-import { Building2 } from "lucide-react";
+import { Landmark } from "lucide-react";
 
 export default function DashboardLayout({
   children,
@@ -22,10 +22,10 @@ export default function DashboardLayout({
         <SidebarHeader>
           <div className="flex items-center gap-2">
             <div className="flex size-8 items-center justify-center rounded-lg bg-primary text-primary-foreground">
-              <Building2 className="size-5" />
+              <Landmark className="size-5" />
             </div>
             <span className="font-headline text-lg group-data-[collapsible=icon]:hidden">
-              ALLY
+              LORDS
             </span>
           </div>
         </SidebarHeader>
