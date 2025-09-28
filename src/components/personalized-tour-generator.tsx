@@ -26,9 +26,12 @@ ${artworks.map(art => `- "${art.title}" by ${art.artist} is in ${art.location}.`
 The galleries are laid out sequentially from 1 to 10.
 `;
 
-export function PersonalizedTourGenerator() {
-  const [isLoading, setIsLoading] = useState(false);
-  const [result, setResult] = useState<PersonalizedTourOutput | null>(null);
+type PersonalizedTourGeneratorProps = {
+    onTourGenerated: (result: PersonalizedTourOutput) => void;
+    onIsLoading: (isLoading: boolean) => void;
+}
+
+export function PersonalizedTourGenerator({ onTourGenerated, onIsLoading }: PersonalizedTourGeneratorProps) {
   const { toast } = useToast();
 
   const form = useForm<z.infer<typeof formSchema>>({
@@ -40,14 +43,13 @@ export function PersonalizedTourGenerator() {
   });
 
   async function onSubmit(values: z.infer<typeof formSchema>) {
-    setIsLoading(true);
-    setResult(null);
+    onIsLoading(true);
     try {
       const tourResult = await generatePersonalizedTour({
         ...values,
         museumMap: museumMapDescription,
       });
-      setResult(tourResult);
+      onTourGenerated(tourResult);
     } catch (error) {
       console.error("Personalized tour generation failed:", error);
       toast({
@@ -56,12 +58,11 @@ export function PersonalizedTourGenerator() {
         variant: "destructive",
       });
     } finally {
-      setIsLoading(false);
+        onIsLoading(false);
     }
   }
 
   return (
-    <div className="grid gap-8">
       <Form {...form}>
         <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8">
           <Card>
@@ -77,7 +78,7 @@ export function PersonalizedTourGenerator() {
                   <FormItem>
                     <FormLabel>Artistic Interests</FormLabel>
                     <FormControl>
-                      <Input placeholder="e.g., Impressionism, Dutch Golden Age, sculptures" {...field} />
+                      <Input placeholder="e.g., Impressionism, Dutch Golden Age" {...field} />
                     </FormControl>
                     <FormDescription>
                       What artists, periods, or styles are you interested in?
@@ -105,55 +106,17 @@ export function PersonalizedTourGenerator() {
                         <SelectItem value="120">2 hours</SelectItem>
                       </SelectContent>
                     </Select>
-                    <FormDescription>
-                      How long would you like your tour to be?
-                    </FormDescription>
                     <FormMessage />
                   </FormItem>
                 )}
               />
-               <Button type="submit" disabled={isLoading} className="w-full">
-                {isLoading ? (
-                    <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-                ) : (
-                    <Route className="mr-2 h-4 w-4" />
-                )}
+               <Button type="submit" className="w-full">
+                <Route className="mr-2 h-4 w-4" />
                 Generate My Tour
               </Button>
             </CardContent>
           </Card>
         </form>
       </Form>
-      
-      {isLoading && (
-        <Card>
-            <CardHeader>
-                <Skeleton className="h-8 w-3/4" />
-                <Skeleton className="h-6 w-1/2" />
-            </CardHeader>
-            <CardContent className="space-y-4">
-                <Skeleton className="h-20 w-full" />
-                <Skeleton className="h-20 w-full" />
-                <Skeleton className="h-20 w-full" />
-            </CardContent>
-        </Card>
-      )}
-
-      {result && (
-        <Card className="animate-in fade-in-50 duration-500">
-            <CardHeader>
-                <CardTitle className="font-headline text-2xl">Your Personalized Tour</CardTitle>
-                <CardDescription>Here's a suggested itinerary based on your preferences.</CardDescription>
-            </CardHeader>
-            <CardContent>
-                <div className="prose prose-sm max-w-none text-foreground dark:prose-invert">
-                    {result.tourDescription.split('\n').map((paragraph, index) => (
-                        <p key={index}>{paragraph}</p>
-                    ))}
-                </div>
-            </CardContent>
-        </Card>
-      )}
-    </div>
   );
 }

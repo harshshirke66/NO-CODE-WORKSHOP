@@ -6,11 +6,11 @@ import {
   SidebarMenuItem,
   SidebarMenuButton,
 } from "@/components/ui/sidebar";
-import { Image, Map, Route, Sparkles } from "lucide-react";
+import { Image, Map, MessageSquare, Route, Sparkles } from "lucide-react";
 import Link from "next/link";
 
 const navItems = [
-  { href: "/dashboard", icon: Image, label: "Identify Artwork" },
+  { href: "/dashboard", icon: MessageSquare, label: "Chat" },
   { href: "/dashboard/tour", icon: Route, label: "Personalized Tour" },
   { href: "/dashboard/map", icon: Map, label: "Museum Map" },
 ];
@@ -18,9 +18,12 @@ const navItems = [
 export function Nav() {
   const pathname = usePathname();
 
+  // Hide tour link since it's in the chat
+  const filteredNavItems = navItems.filter(item => item.href !== '/dashboard/tour');
+
   return (
     <SidebarMenu>
-      {navItems.map((item) => (
+      {filteredNavItems.map((item) => (
         <SidebarMenuItem key={item.href}>
           <Link href={item.href}>
             <SidebarMenuButton

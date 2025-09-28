@@ -1,15 +1,9 @@
-import { ArtworkIdentifier } from "@/components/artwork-identifier";
+import { ChatInterface } from "@/components/chat-interface";
 
-export default function IdentifyArtworkPage() {
+export default function ChatPage() {
   return (
-    <div className="container mx-auto">
-      <div className="space-y-2 mb-8">
-        <h1 className="text-4xl font-headline tracking-tight">Artwork Identification</h1>
-        <p className="text-muted-foreground">
-          Have a picture of an artwork you can't place? Upload it here and let ALLY tell you all about it.
-        </p>
-      </div>
-      <ArtworkIdentifier />
+    <div className="h-full">
+      <ChatInterface />
     </div>
   );
 }
